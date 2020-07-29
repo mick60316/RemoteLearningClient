@@ -24,7 +24,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.airbnb.lottie.L;
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.remotecontroller.Component.CustomVideoView;
 import com.example.remotecontroller.Component.LightSensor;
@@ -78,7 +77,7 @@ public class MainActivity extends Activity  {
 		setContentView(R.layout.activity_main);
 
 		setActivityInfo();
-		linkUserInterface();
+		linkUserInterfaceAndCreateCustomVideoview();
 		registerBoardcast();
 		startClockTimer();
 		hideBottomUIMenu2();
@@ -127,9 +126,12 @@ public class MainActivity extends Activity  {
 	}
 
 
-	private void linkUserInterface ()// Link user interface between xml with java code
+	private void linkUserInterfaceAndCreateCustomVideoview()
 	{
 
+		/*
+			Link user interface between xml with java code and create custom videoview
+		 */
 		deviceConnSate = findViewById(R.id.text_device_conn_state);
 		tabletConnSate = findViewById(R.id.text_tablet_conn_state);
 		mobileConnSate = findViewById(R.id.text_mobile_conn_state);
@@ -204,9 +206,7 @@ public class MainActivity extends Activity  {
 				break;
 			case Constant.RECEIVE:
 				String data = new String(intent.getByteArrayExtra(Constant.RECEIVE_MSG));
-				bleMessageProcess(data);
-				Log.i(TAG,data);
-
+				processBleMessage(data);
 				receivingData.setText(data);
 				triggerOnClick(data); //同 onclick(), 觸發changeSession事件
 				break;
@@ -225,7 +225,7 @@ public class MainActivity extends Activity  {
 		}
 		}
 	};
-	private void bleMessageProcess (String message)
+	private void processBleMessage(String message)
 	{
 		String []dataSplit =message.split(",");
 		if (dataSplit[0].equals("next"))
@@ -282,7 +282,6 @@ public class MainActivity extends Activity  {
 		Intent intent = new Intent();
 		intent.setAction(Constant.SEND);
 		intent.putExtra(Constant.SEND_MSG, message);
-
 		sendBroadcast(intent);
 	}
 
@@ -312,6 +311,10 @@ public class MainActivity extends Activity  {
 
 	public void onClick (View view)
 	{
+		/*
+		*  Button click event
+		*
+		* */
 		switch (view.getId())
 		{
 			case R.id.btn_video1: case  R.id.btn_s5back:	case R.id.btn_endclass:
@@ -326,9 +329,6 @@ public class MainActivity extends Activity  {
 				break;
 			case R.id.btn_video4:
 				changeSession(ExtraTools.S4);
-				//lottieAnimationView.setAnimation("kaleidoscope2.mp4.lottie.json");
-				//lottieAnimationView.loop(true);
-
 				break;
 			case R.id.btn_video5:
 //				changeSession(ExtraTools.S5);
@@ -340,7 +340,7 @@ public class MainActivity extends Activity  {
 				sendMessageToTabletServer(testStr.getBytes());
 				break;
 			case R.id.btn_s4next: case R.id.btn_start: case R.id.btn_play:
-				if (isNextLock ==false) {
+				if (!isNextLock) {
 					sendMessageToTabletServer("next,".getBytes());
 					customVideoView.nextClick();
 					sendLockAppToService(true);
@@ -358,7 +358,6 @@ public class MainActivity extends Activity  {
 				else
 				{
 					Log.e(TAG,"Can not next");
-
 				}
 				break;
 			case R.id.btn_audible:
