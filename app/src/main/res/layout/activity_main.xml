@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+    <VideoView
+        android:id="@+id/videoview"
+        android:layout_width="1920px"
+        android:layout_height="1200px">
+    </VideoView>
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="1920px"
+        android:layout_height="1200px"
+
+        >
+    </ImageView>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_show_mode"
+        app:lottie_fileName="launcher.json"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </com.airbnb.lottie.LottieAnimationView>
+
+    <RelativeLayout
+        android:id="@+id/s1lyaout"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+        <RelativeLayout
+            android:id="@+id/class_info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/clock_TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="108px"
+                android:layout_marginLeft="190px"
+                android:text="10:10 AM"
+                android:fontFamily="@font/amazon_ember_display_rg"
+                android:textSize="100px"
+                android:textColor="#FFFFFF"
+            ></TextView>
+            <ImageView
+                android:src="@mipmap/showmode_weather"
+                android:layout_marginTop="248px"
+                android:layout_marginLeft="190px"
+                android:layout_width="274px"
+                android:layout_height="92px">
+            </ImageView>
+
+            <TextView
+                android:id="@+id/class_clock_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="454px"
+                android:layout_marginLeft="190px"
+                android:text="Math Class at 10:30"
+                android:fontFamily="@font/amazon_ember_display_rg"
+                android:textSize="80px"
+                android:textColor="#FFFFFF">
+            </TextView>
+        </RelativeLayout>
+        <Button
+            android:id="@+id/btn_s1_class_time"
+            android:onClick="onClick"
+            android:layout_width="600px"
+            android:layout_height="200px"
+            android:layout_marginTop="454px"
+            android:layout_marginLeft="190px"
+            android:background="#00000000">
+        </Button>
+        <Button
+            android:id="@+id/btn_s5back"
+            android:layout_marginTop="50px"
+            android:layout_marginLeft="0px"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:background="#00000000"
+            android:onClick="onClick"></Button>
+        <Button
+            android:id="@+id/btn_s5play_lottie"
+            android:layout_width="1920px"
+            android:layout_height="500px"
+            android:layout_marginTop="700px"
+            android:background="#00000000"
+            android:onClick="onClick">
+        </Button>
+        <Button
+            android:id="@+id/btn_audible_play"
+            android:layout_width="95px"
+            android:layout_height="96px"
+            android:layout_marginLeft="900px"
+            android:layout_marginTop="980px"
+            android:onClick="onClick"
+            android:background="@mipmap/pause"
+            ></Button>
+        <Button
+            android:id="@+id/btn_audible"
+            android:layout_width="200px"
+            android:layout_height="200px"
+            android:layout_marginTop="950px"
+            android:layout_marginLeft="550px"
+            android:onClick="onClick"
+            android:background="#00000000"
+
+            ></Button>
+        </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/s2layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btn_start"
+            android:background="#00000000"
+            android:layout_marginLeft="1600px"
+            android:layout_marginTop="400px"
+            android:layout_width="300px"
+            android:layout_height="150px"
+            android:onClick="onClick"
+
+            ></Button>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/s3layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btn_endclass"
+            android:layout_width="200px"
+            android:layout_height="100px"
+            android:layout_marginTop="1050px"
+            android:layout_marginLeft="1350px"
+            android:onClick="onClick"
+            android:background="#00000000"
+            >
+
+        </Button>
+
+        
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/s4layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btn_s4next"
+            android:layout_marginLeft="50px"
+            android:layout_marginTop="100px"
+            android:layout_width="1800px"
+            android:layout_height="1000px"
+            android:onClick="onClick"
+            android:background="#00000000"
+            ></Button>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/s5layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ble_debugLayout"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Device Server:  "
+             />
+            <TextView
+                android:id="@+id/text_device_conn_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="disconnected"
+                />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tablet Server:  "
+            />
+            <TextView
+                android:id="@+id/text_tablet_conn_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="disconnected"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mobile Server:  "
+            />
+        <TextView
+            android:id="@+id/text_mobile_conn_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="disconnected"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" "
+           />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Receiving data:  "
+             />
+            <TextView
+                android:id="@+id/text_receiving_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" " />
+
+
+        <Button
+            android:id="@+id/btn_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="send to tablet"
+            android:visibility="invisible"
+            android:onClick="onClick" />
+
+
+
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/light_mask"
+        android:background="#000000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+    </ImageView>
+    <LinearLayout
+
+        android:id="@+id/btn_debug_layout"
+        android:visibility="invisible"
+        android:layout_marginTop="600px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:text="S1"
+            android:id="@+id/btn_video1"
+            android:onClick="onClick"
+            android:layout_width="300px"
+            android:layout_height="100px">
+        </Button>
+        <Button
+            android:text="S2"
+            android:id="@+id/btn_video2"
+            android:onClick="onClick"
+            android:layout_width="300px"
+            android:layout_height="100px">
+        </Button>
+        <Button
+            android:text="S3"
+            android:id="@+id/btn_video3"
+            android:onClick="onClick"
+            android:layout_width="300px"
+            android:layout_height="100px">
+        </Button>
+        <Button
+            android:text="S4"
+            android:id="@+id/btn_video4"
+            android:onClick="onClick"
+            android:layout_width="300px"
+            android:layout_height="100px">
+        </Button>
+        <Button
+            android:text="S5"
+            android:id="@+id/btn_video5"
+            android:onClick="onClick"
+            android:layout_width="300px"
+            android:layout_height="100px">
+        </Button>
+        <Button
+            android:text="Next"
+            android:id="@+id/btn_play"
+            android:onClick="onClick"
+            android:layout_width="300px"
+            android:layout_height="100px">
+        </Button>
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_debug"
+        android:onClick="onClick"
+        android:layout_width="300px"
+        android:layout_height="300px"
+        android:layout_marginTop="800px"
+        android:background="#00000000"
+        ></Button>
+
+
+
+</RelativeLayout>
