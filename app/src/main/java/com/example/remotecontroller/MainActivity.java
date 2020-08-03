@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,6 +55,8 @@ public class MainActivity extends Activity  {
 	private boolean isPlay =true;
 	private boolean isDebugMode =false;
 	private boolean isNextLock =false;
+	private MediaPlayer topInAudio,botInAudio;
+
 
 
 
@@ -81,7 +84,8 @@ public class MainActivity extends Activity  {
 		registerBoardcast();
 		startClockTimer();
 		hideBottomUIMenu2();
-
+		topInAudio=MediaPlayer.create(this,Resource.tableConnectTopAudioId);
+		botInAudio=MediaPlayer.create(this,Resource.tableConnectBotAudioId);
 
 		clockClassTextView.setText("Math Class at "+ExtraTools.getClassTime());
 
@@ -139,7 +143,7 @@ public class MainActivity extends Activity  {
 		//paintingView =findViewById(R.id.PaintingView);
 		clockTextView=findViewById(R.id.clock_TextView);
 		clockClassTextView=findViewById(R.id.class_clock_textview);
-		customVideoView=new CustomVideoView(findViewById(R.id.videoview), findViewById(R.id.imageView), new CustomVideoView.AlexaFinishCallback() {
+		customVideoView=new CustomVideoView(this,findViewById(R.id.videoview), findViewById(R.id.imageView), new CustomVideoView.AlexaFinishCallback() {
 			@Override
 			public void onCompletion() {
 				changeSession(ExtraTools.S1);
@@ -261,6 +265,7 @@ public class MainActivity extends Activity  {
 				TimerTask task = new TimerTask(){
 					public void run(){
 						sendMessageToTabletServer(("btm,in," + (currentSession + 1) + "," + (customVideoView.getCurrentCheckPointIndex())).getBytes());
+						botInAudio.start();
 					}
 				};
 				Timer timer = new Timer();
@@ -268,7 +273,7 @@ public class MainActivity extends Activity  {
 			}
 			else if (dataSplit[1].equals("out"))
 			{
-				Log.e(TAG,"OUOUOUOUOUOUOUOUOU");
+
 				if(currentSession==ExtraTools.S4) customVideoView.setIsSingle(true);
 //				sendMessageToTabletServer(("btm,out," + (currentSession + 1) + "," + (customVideoView.getCurrentCheckPointIndex())).getBytes());
 
@@ -331,6 +336,7 @@ public class MainActivity extends Activity  {
 				changeSession(ExtraTools.S4);
 				break;
 			case R.id.btn_video5:
+				//customVideoView.playAlexaOkAudio("ff");
 //				changeSession(ExtraTools.S5);
 				break;
 				//customVideoView.replayVideo();
@@ -368,6 +374,8 @@ public class MainActivity extends Activity  {
 				sendMessageToTabletServer("audible,".getBytes());
 				customVideoView.nextClick();
 				sendLockAppToService(true);
+				audiable_play_button.setBackground(isPlay? getResources().getDrawable(R.mipmap.pause): getResources().getDrawable(R.mipmap.play));
+
 				break;
 			case R.id.btn_audible_play:
 				isPlay=!isPlay;
@@ -375,7 +383,6 @@ public class MainActivity extends Activity  {
 				if (isPlay)
 				{
 					customVideoView.s5PlayVideo();
-
 				}
 				else
 				{
@@ -411,17 +418,22 @@ public class MainActivity extends Activity  {
 				break;
 				default:
 				break;
-
-
-
 		}
 
 	}
 
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		topInAudio.start();
+	}
+
 	private void changeSession (int session)
 	{
+
 		if (session ==ExtraTools.S1) {
 			classInfoLayout.setVisibility(View.VISIBLE);
+			clockClassTextView.setText("Math Class at "+ExtraTools.getClassTime());
 			sendLockAppToService(false);
 		}
 		else if (session==ExtraTools.S2 || session== ExtraTools.S4)

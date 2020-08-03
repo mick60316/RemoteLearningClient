@@ -21,7 +21,11 @@ public class Resource {
 
     public static final int playIcon  = R.mipmap.play;
     public static final int pauseIcon = R.mipmap.pause;
-    public static  final  int homepageImageId = R.drawable.home_page;
+    public static final int homepageImageId = R.drawable.home_page;
+    public static final int alexaAudioOkId = R.raw.alexa_ok;
+    public static final int alexaAudioStartId = R.raw.med_ui_alexa_start;
+    public static final int tableConnectTopAudioId =R.raw.top;
+    public static final int tableConnectBotAudioId =R.raw.bot;
 
 
 //    public static final int chessSingleImagePath = R.mipmap.chess_single;

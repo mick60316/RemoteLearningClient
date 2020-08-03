@@ -1,9 +1,8 @@
 package com.example.remotecontroller.Component;
 
-import android.icu.text.Collator;
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,13 +41,19 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
     private int [] checkPoint  =new int []{-1,2000,3000,4000,5000};
     private int currentCheckPointIndex =0 ;
     private LottieAnimationView lottieAnimationView;
-    public CustomVideoView (VideoView videoView, ImageView imageView,AlexaFinishCallback alexaFinishCallback)
+
+    private MediaPlayer alexaOkAudio;
+    private MediaPlayer alexaStartAudio;
+    public CustomVideoView (Context context, VideoView videoView, ImageView imageView, AlexaFinishCallback alexaFinishCallback)
     {
 
         this.videoView=videoView;
         this.imageView=imageView;
         this.alexaFinishCallback=alexaFinishCallback;
-
+        alexaOkAudio =new MediaPlayer();
+        alexaStartAudio =new MediaPlayer();
+        alexaStartAudio=MediaPlayer.create(context,R.raw.med_ui_alexa_start);
+        alexaOkAudio =MediaPlayer.create(context,R.raw.alexa_ok);
         videoView.setOnCompletionListener(this);
         detectorVideoFrame();
     }
@@ -107,11 +112,20 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
                 videoView.setVideoURI(Uri.parse(Resource.s2_2VideoPath));
                 currentCheckPointIndex++;
                 isLoop = true;
+                playAlexaOkAudio();
+            }
+            else if (currentCheckPointIndex ==1)
+            {
+                currentCheckPointIndex++;
+                videoView.start();
+                videoView.seekTo(7000);
+
             }
         }
         else if (currentSession==ExtraTools.S4)
         {
             Log.e(TAG,"currentCheckPointIndex  "+currentCheckPointIndex);
+            if (currentCheckPointIndex ==-1)playAlexaOkAudio();
             currentCheckPointIndex++;
             currentCheckPointIndex%=4;
             imageView.setVisibility(View.VISIBLE);
@@ -140,6 +154,7 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
         currentSession=session;
         currentCheckPointIndex= 0;
         String videoReource="";
+
         imageView.setVisibility(View.INVISIBLE);
         lottieAnimationView.setVisibility(View.INVISIBLE);
         isVideoReady =false;
@@ -160,6 +175,7 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
                 videoView.setVisibility(View.VISIBLE);
                 videoReource=Resource.s2VideoPath;
                 checkPoint =s2CheckPoint;
+                playAlexaStartAudio();
                 isLoop=true;
                 break;
             case ExtraTools.S3:
@@ -170,6 +186,7 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
                 isLoop =false;
                 break;
             case ExtraTools.S4:
+                playAlexaStartAudio();
                 videoView.setVisibility(View.VISIBLE);
                 videoReource=Resource.s4VideoPath;
                 checkPoint =s4CheckPoint;
@@ -301,6 +318,18 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
     public interface AlexaFinishCallback{
         void onCompletion ();
     }
+
+    public void playAlexaOkAudio( )
+    {
+        if (alexaOkAudio.isPlaying())alexaOkAudio.stop();
+        alexaOkAudio.start();
+    }
+    public void playAlexaStartAudio ()
+    {
+        if (alexaStartAudio.isPlaying())alexaStartAudio.stop();
+        alexaStartAudio.start();
+    }
+
 
 
 
