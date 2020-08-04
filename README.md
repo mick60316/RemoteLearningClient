@@ -10,10 +10,10 @@ RemoteLearningClient
 0729  第一版 四種mode製作
 ---
 
-Show mode
-Zoom
-Class mode
-Game mode  
+# Show mode
+# Zoom mode
+# Class mode
+# Game mode  
 
 0803 修改部分bug
 ---
