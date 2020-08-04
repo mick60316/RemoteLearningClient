@@ -12,26 +12,26 @@ RemoteLearningClient
   
 #0803 修改部分bug
 
-  ##Show mode:
+##Show mode:
     底圖畫面有白線
     課程時間觸發切換至Show mode時即更新
     Lottie animation update
     Light sensor 敏感度下降為10
     
-  ##Zoom mode :
+##Zoom mode :
     按下Start 即馬上跳轉至課程
     新增Alexa Ok 以及 Alexa Start 音效
     下半部的平板切換成Note
   
-  ##Class mode:
+##Class mode:
     手繪的範圍修改
     所有的mode能夠透過Manubar切換
     修正截圖後再次進入時會閃爍的bug
     
-  ##Game mode:
+##Game mode:
     新增Alexa Ok 以及 Alexa Start 音效
     
-  ##Normal :
+##Normal :
     hide 下半部的navigation bar 
    
     
