@@ -10,8 +10,7 @@ RemoteLearningClient
 Show mode
 Zoom
 線上教學+截圖
-遊戲互動
-  
+遊戲互動  
 0803 修改部分bug
 ---
 #### Show mode:
@@ -30,7 +29,14 @@ Light sensor 敏感度下降為10
 #### Game mode:
 新增Alexa Ok 以及 Alexa Start 音效
 #### Normal :
-hide 下半部的navigation bar 
+hide 下半部的navigation bar
+0804 Logan Combine
+---
+新增Reset功能 (只有Show mode 能夠 Trigger)
+修正下半部paintting顯示問題
+
+
+
    
     
   
