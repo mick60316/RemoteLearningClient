@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.remotecontroller.Constant;
+import com.example.remotecontroller.ExtraTools;
 import com.example.remotecontroller.MainActivity;
 
 import java.sql.Time;
@@ -224,7 +225,7 @@ public class BLEService {
 		@Override
 		public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 			super.onCharacteristicChanged(gatt, characteristic);
-		Log.e("TAG", "onCharacteristicChanged  " + "DeviceName:  " + gatt.getDevice().getName() + "  value:  " + characteristic.getStringValue(0));
+			Log.e("TAG", "onCharacteristicChanged  " + "DeviceName:  " + gatt.getDevice().getName() + "  value:  " + characteristic.getStringValue(0));
 			String val = characteristic.getStringValue(0).trim();
 
 			// test
@@ -284,7 +285,14 @@ public class BLEService {
 						isConnMap.put(Constant.DEVICE_MOBILE, true);
 					} else if (val.contentEquals("update,")) {
 						sendStateToMobile();
+					} else if (val.contentEquals("reset,")) {
+						if (myService.currentSession != ExtraTools.S1) return;
+						myService.triggerActivityToHome();
+						sendData(Constant.DEVICE_TABLET, characteristic.getValue());
+						tabletsStatus.put("top", "out");
+						tabletsStatus.put("btm", "out");
 					} else {
+						// when signal is reset && current session != s1, don't send 'reset' to DEVICE_TABLET
 						sendData(Constant.DEVICE_TABLET, characteristic.getValue());
 					}
 					break;

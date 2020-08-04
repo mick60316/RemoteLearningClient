@@ -202,31 +202,31 @@ public class MainActivity extends Activity  {
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-		String action = intent.getAction();
-		String state = "";
-		switch (action) {
-			case Constant.CMD_SHUTDOWN:
-				finishAndRemoveTask();
-				break;
-			case Constant.RECEIVE:
-				String data = new String(intent.getByteArrayExtra(Constant.RECEIVE_MSG));
-				processBleMessage(data);
-				receivingData.setText(data);
-				triggerOnClick(data); //同 onclick(), 觸發changeSession事件
-				break;
-			case Constant.STATE_ARDUINO:
-				state = new String(intent.getByteArrayExtra(Constant.CONN));
-				deviceConnSate.setText(state);
-				break;
-			case Constant.STATE_TABLET:
-				state = new String(intent.getByteArrayExtra(Constant.CONN));
-				tabletConnSate.setText(state);
-				break;
-			case Constant.STATE_MOBILE:
-				state = new String(intent.getByteArrayExtra(Constant.CONN));
-				mobileConnSate.setText(state);
-				break;
-		}
+			String action = intent.getAction();
+			String state = "";
+			switch (action) {
+				case Constant.CMD_SHUTDOWN:
+					finishAndRemoveTask();
+					break;
+				case Constant.RECEIVE:
+					String data = new String(intent.getByteArrayExtra(Constant.RECEIVE_MSG));
+					processBleMessage(data);
+					receivingData.setText(data);
+					triggerOnClick(data); //同 onclick(), 觸發changeSession事件
+					break;
+				case Constant.STATE_ARDUINO:
+					state = new String(intent.getByteArrayExtra(Constant.CONN));
+					deviceConnSate.setText(state);
+					break;
+				case Constant.STATE_TABLET:
+					state = new String(intent.getByteArrayExtra(Constant.CONN));
+					tabletConnSate.setText(state);
+					break;
+				case Constant.STATE_MOBILE:
+					state = new String(intent.getByteArrayExtra(Constant.CONN));
+					mobileConnSate.setText(state);
+					break;
+			}
 		}
 	};
 	private void processBleMessage(String message)
@@ -278,7 +278,6 @@ public class MainActivity extends Activity  {
 //				sendMessageToTabletServer(("btm,out," + (currentSession + 1) + "," + (customVideoView.getCurrentCheckPointIndex())).getBytes());
 
 			}
-			Log.e(TAG, "dataSplit[1].equals(\"in\")) sendMessageToTabletServer");
 		}
 	}
 
@@ -317,15 +316,15 @@ public class MainActivity extends Activity  {
 	public void onClick (View view)
 	{
 		/*
-		*  Button click event
-		*
-		* */
+		 *  Button click event
+		 *
+		 * */
 		switch (view.getId())
 		{
 			case R.id.btn_video1: case  R.id.btn_s5back:	case R.id.btn_endclass:
 
-				changeSession(ExtraTools.S1);
-				break;
+			changeSession(ExtraTools.S1);
+			break;
 			case R.id.btn_video2:
 				changeSession(ExtraTools.S2);
 				break;
@@ -339,33 +338,33 @@ public class MainActivity extends Activity  {
 				//customVideoView.playAlexaOkAudio("ff");
 //				changeSession(ExtraTools.S5);
 				break;
-				//customVideoView.replayVideo();
+			//customVideoView.replayVideo();
 
 			case R.id.btn_test:
 				String testStr = "Hello world";
 				sendMessageToTabletServer(testStr.getBytes());
 				break;
 			case R.id.btn_s4next: case R.id.btn_start: case R.id.btn_play:
-				if (!isNextLock) {
-					sendMessageToTabletServer("next,".getBytes());
-					customVideoView.nextClick();
-					sendLockAppToService(true);
-					isNextLock =true;
-					Timer timer =new Timer();
-					timer.schedule(new TimerTask() {
-						@Override
-						public void run() {
-							Log.e(TAG,"Timer Click");
-							isNextLock =false;
-							timer.cancel();
-						}
-					},500);
-				}
-				else
-				{
-					Log.e(TAG,"Can not next");
-				}
-				break;
+			if (!isNextLock) {
+				sendMessageToTabletServer("next,".getBytes());
+				customVideoView.nextClick();
+				sendLockAppToService(true);
+				isNextLock =true;
+				Timer timer =new Timer();
+				timer.schedule(new TimerTask() {
+					@Override
+					public void run() {
+						Log.e(TAG,"Timer Click");
+						isNextLock =false;
+						timer.cancel();
+					}
+				},500);
+			}
+			else
+			{
+				Log.e(TAG,"Can not next");
+			}
+			break;
 			case R.id.btn_audible:
 				isPlay =true;
 				classInfoLayout.setVisibility(View.INVISIBLE);
@@ -416,7 +415,7 @@ public class MainActivity extends Activity  {
 				bleDebugLayout.setVisibility(visablity);
 				btnDebugLayout.setVisibility(visablity);
 				break;
-				default:
+			default:
 				break;
 		}
 
@@ -430,7 +429,7 @@ public class MainActivity extends Activity  {
 
 	private void changeSession (int session)
 	{
-
+		currentSession = session;
 		if (session ==ExtraTools.S1) {
 			classInfoLayout.setVisibility(View.VISIBLE);
 			clockClassTextView.setText("Math Class at "+ExtraTools.getClassTime());
@@ -448,14 +447,12 @@ public class MainActivity extends Activity  {
 
 
 		sendMessageToTabletServer(("session,"+(session+1)).getBytes());
-		currentSession = session;
+//		currentSession = session;
 		customVideoView.changeSession(session);
 		audiable_play_button.setVisibility(View.INVISIBLE);
 		Log.i(TAG,"Change Session To "+currentSession);
-//		Intent intent = new Intent();
-//		intent.setAction(Constant.LOCK_APPLICATION);
-//		intent.putExtra(Constant.LOCK_APPLICATION, currentSession);
-//		sendBroadcast(intent);
+
+
 		for (int sessionLayoutIndex =0;sessionLayoutIndex<sessionLayouts.length ;sessionLayoutIndex++)
 		{
 			if (sessionLayouts[sessionLayoutIndex] != null)
@@ -519,6 +516,7 @@ public class MainActivity extends Activity  {
 		Intent intent = new Intent();
 		intent.setAction(Constant.LOCK_APPLICATION);
 		intent.putExtra(Constant.LOCK_APPLICATION, isLockApp);
+		intent.putExtra("currentSession", currentSession);
 		sendBroadcast(intent);
 	}
 }

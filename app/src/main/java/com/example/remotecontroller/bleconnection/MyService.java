@@ -20,6 +20,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import com.example.remotecontroller.Constant;
+import com.example.remotecontroller.ExtraTools;
 import com.example.remotecontroller.MainActivity;
 import com.example.remotecontroller.R;
 
@@ -38,6 +39,7 @@ public class MyService extends Service {
 	private BLEService mBLEService;
 
 	private boolean lockApp =false;
+	public int currentSession = ExtraTools.S1;
 
 	public String connDeviceState = "disconnected", connTabletState = "disconnected", connMobileState = "disconnected";
 
@@ -171,8 +173,7 @@ public class MyService extends Service {
 	 * @param state
 	 */
 	public void stateChanged(String deviceName, String state) {
-		Log.e(TAG, "Constant.DEVICE_MOBILE: "+Constant.DEVICE_MOBILE);
-		Log.e(TAG, "String deviceName: "+deviceName);
+		Log.e(TAG, "StateChanged: deviceName: "+deviceName);
 		if (isForeground(this.getPackageName())){
 			if (Constant.DEVICE_ARDUINO.contentEquals(deviceName)){
 				connDeviceState = state;
@@ -212,14 +213,9 @@ public class MyService extends Service {
 			}
 			else if (action.equals(Constant.LOCK_APPLICATION))
 			{
-
 				lockApp=intent.getBooleanExtra(Constant.LOCK_APPLICATION,false);
-
-				Log.i(TAG ,"Lock App "+ lockApp);
-
-
-
-
+				currentSession = intent.getIntExtra("currentSession", -1);
+				Log.e(TAG, "Service: current session: " + currentSession);
 			}
 		}
 	};
