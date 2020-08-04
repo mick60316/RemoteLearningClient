@@ -5,12 +5,14 @@ RemoteLearningClient
 連線上使用了BLE做為兩台平板之間的溝通橋樑，UI的部分加入了Lottie。而專案最困難的部分為兩台電腦中間溝通複雜的訊號。
 此專案分為上半部(此git) 以及下半部(https://github.com/mick60316/RemoteLearningServer)
 
-#0729  第一版 四種mode製作
-##Audiable
-##Zoom
-##線上教學+截圖
+0729  第一版 四種mode製作
+---
+#Audiable#Zoom
+#線上教學+截圖
   4. 遊戲互動
-#0803 修改部分bug
+  
+0803 修改部分bug
+---
 ##Show mode:
     底圖畫面有白線
     課程時間觸發切換至Show mode時即更新
