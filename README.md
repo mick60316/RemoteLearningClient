@@ -9,6 +9,7 @@ RemoteLearningClient
 
 0729  第一版 四種mode製作
 ---
+
 Show mode
 Zoom
 Class mode
@@ -16,6 +17,7 @@ Game mode
 
 0803 修改部分bug
 ---
+
 #### Show mode:
 底圖畫面有白線
 課程時間觸發切換至Show mode時即更新
