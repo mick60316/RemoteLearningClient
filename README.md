@@ -3,14 +3,17 @@ RemoteLearningClient
 此專案開發餘Fire table上，主要為了在兒童教育上提供使用者一種多台平板電腦之間的互動。
 當中包括了，線上學習、遊戲......等等的互動
 連線上使用了BLE做為兩台平板之間的溝通橋樑，UI的部分加入了Lottie。而專案最困難的部分為兩台電腦中間溝通複雜的訊號。
-  此專案分為上半部(此git) 以及下半部(https://github.com/mick60316/RemoteLearningServer)
+此專案分為
+上半部(https://github.com/mick60316/RemoteLearningClient)
+下半部(https://github.com/mick60316/RemoteLearningServer)
 
 0729  第一版 四種mode製作
 ---
 Show mode
 Zoom
-線上教學+截圖
-遊戲互動  
+Class mode
+Game mode  
+
 0803 修改部分bug
 ---
 #### Show mode:
@@ -30,6 +33,7 @@ Light sensor 敏感度下降為10
 新增Alexa Ok 以及 Alexa Start 音效
 #### Normal :
 hide 下半部的navigation bar
+
 0804 Logan Combine
 ---
 新增Reset功能 (只有Show mode 能夠 Trigger)
