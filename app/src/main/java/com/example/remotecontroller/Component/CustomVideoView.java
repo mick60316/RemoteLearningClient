@@ -1,9 +1,8 @@
 package com.example.remotecontroller.Component;
 
-import android.icu.text.Collator;
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,13 +41,19 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
     private int [] checkPoint  =new int []{-1,2000,3000,4000,5000};
     private int currentCheckPointIndex =0 ;
     private LottieAnimationView lottieAnimationView;
-    public CustomVideoView (VideoView videoView, ImageView imageView,AlexaFinishCallback alexaFinishCallback)
+
+    private MediaPlayer alexaOkAudio;
+    private MediaPlayer alexaStartAudio;
+    public CustomVideoView (Context context, VideoView videoView, ImageView imageView, AlexaFinishCallback alexaFinishCallback)
     {
 
         this.videoView=videoView;
         this.imageView=imageView;
         this.alexaFinishCallback=alexaFinishCallback;
-
+        alexaOkAudio =new MediaPlayer();
+        alexaStartAudio =new MediaPlayer();
+        alexaStartAudio=MediaPlayer.create(context,R.raw.med_ui_alexa_start);
+        alexaOkAudio =MediaPlayer.create(context,R.raw.alexa_ok);
         videoView.setOnCompletionListener(this);
         detectorVideoFrame();
     }
@@ -82,28 +87,45 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
     }
     public void nextClick ()
     {
-        Log.i(TAG,"nextClick");
-        if (currentSession ==ExtraTools.S1&& currentCheckPointIndex ==0)
+        /*
+            Next button click event
+
+        */
+        Log.e(TAG,"nextClick");
+        if (currentSession ==ExtraTools.S1)
         {
-            lottieAnimationView.setVisibility(View.INVISIBLE);
-            imageView.setVisibility(View.INVISIBLE);
-            videoView.setVisibility(View.VISIBLE);
-            videoView.setVideoURI(Uri.parse(Resource.s5_2VideoPath));
-            Log.e(TAG,"HHHHHHHHHHHHHHHHHHH");
-            videoView.start();
-            currentCheckPointIndex++;
+            if (currentCheckPointIndex ==0) {
+                lottieAnimationView.setVisibility(View.INVISIBLE);
+                imageView.setVisibility(View.INVISIBLE);
+                videoView.setVisibility(View.VISIBLE);
+                videoView.setVideoURI(Uri.parse(Resource.s5_2VideoPath));
+
+                videoView.start();
+                currentCheckPointIndex++;
+            }
 
 
         }
-        else if (currentSession ==ExtraTools.S2  && currentCheckPointIndex ==0)
+        else if (currentSession ==ExtraTools.S2)
         {
-            videoView.setVideoURI(Uri.parse(Resource.s2_2VideoPath));
-            currentCheckPointIndex++;
-            isLoop=true;
+            if (currentCheckPointIndex ==0) {
+                videoView.setVideoURI(Uri.parse(Resource.s2_2VideoPath));
+                currentCheckPointIndex++;
+                isLoop = true;
+                playAlexaOkAudio();
+            }
+            else if (currentCheckPointIndex ==1)
+            {
+                currentCheckPointIndex++;
+                videoView.start();
+                videoView.seekTo(7000);
+
+            }
         }
         else if (currentSession==ExtraTools.S4)
         {
             Log.e(TAG,"currentCheckPointIndex  "+currentCheckPointIndex);
+            if (currentCheckPointIndex ==-1)playAlexaOkAudio();
             currentCheckPointIndex++;
             currentCheckPointIndex%=4;
             imageView.setVisibility(View.VISIBLE);
@@ -117,18 +139,6 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
             currentCheckPointIndex++;
             currentCheckPointIndex%=checkPoint.length;
         }
-//        if (currentSession==ExtraTools.S5 && currentCheckPointIndex ==0)
-//        {
-//            lottieAnimationView.setVisibility(View.INVISIBLE);
-//            imageView.setVisibility(View.INVISIBLE);
-//            videoView.setVideoURI(Uri.parse(Resource.s5_2VideoPath));
-//
-//        }
-
-
-
-
-
     }
 
     public void changeSession (int session)
@@ -144,6 +154,7 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
         currentSession=session;
         currentCheckPointIndex= 0;
         String videoReource="";
+
         imageView.setVisibility(View.INVISIBLE);
         lottieAnimationView.setVisibility(View.INVISIBLE);
         isVideoReady =false;
@@ -164,6 +175,7 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
                 videoView.setVisibility(View.VISIBLE);
                 videoReource=Resource.s2VideoPath;
                 checkPoint =s2CheckPoint;
+                playAlexaStartAudio();
                 isLoop=true;
                 break;
             case ExtraTools.S3:
@@ -174,24 +186,13 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
                 isLoop =false;
                 break;
             case ExtraTools.S4:
+                playAlexaStartAudio();
                 videoView.setVisibility(View.VISIBLE);
                 videoReource=Resource.s4VideoPath;
                 checkPoint =s4CheckPoint;
                 currentCheckPointIndex=-1;
                 isLoop=true;
                 break;
-//            case ExtraTools.S5:
-//                videoView.setVisibility(View.VISIBLE);
-//                checkPoint=s5CheckPoint;
-//                videoReource=Resource.s5VideoPath;
-//
-//                lottieAnimationView.setVisibility(View.VISIBLE);
-//                lottieAnimationView.playAnimation();
-//                imageView.setImageResource(Resource.homepageImageId);
-//                imageView.setVisibility(View.VISIBLE);
-//                isLoop=true;
-//
-//                break;
             default:
                 break;
 
@@ -289,7 +290,6 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
         this.lottieAnimationView=lottieAnimationView;
         this.lottieAnimationView.addAnimatorUpdateListener((animation -> {
             float test = (float) animation.getAnimatedValue();
-            Log.i(TAG,"test"+test);
 
         }));
     }
@@ -317,9 +317,19 @@ public class CustomVideoView implements MediaPlayer.OnCompletionListener {
     }
     public interface AlexaFinishCallback{
         void onCompletion ();
-
-
     }
+
+    public void playAlexaOkAudio( )
+    {
+        if (alexaOkAudio.isPlaying())alexaOkAudio.stop();
+        alexaOkAudio.start();
+    }
+    public void playAlexaStartAudio ()
+    {
+        if (alexaStartAudio.isPlaying())alexaStartAudio.stop();
+        alexaStartAudio.start();
+    }
+
 
 
 

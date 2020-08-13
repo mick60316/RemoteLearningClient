@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +25,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.airbnb.lottie.L;
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.remotecontroller.Component.CustomVideoView;
 import com.example.remotecontroller.Component.LightSensor;
@@ -55,6 +55,8 @@ public class MainActivity extends Activity  {
 	private boolean isPlay =true;
 	private boolean isDebugMode =false;
 	private boolean isNextLock =false;
+	private MediaPlayer topInAudio,botInAudio;
+
 
 
 
@@ -78,11 +80,12 @@ public class MainActivity extends Activity  {
 		setContentView(R.layout.activity_main);
 
 		setActivityInfo();
-		linkUserInterface();
+		linkUserInterfaceAndCreateCustomVideoview();
 		registerBoardcast();
 		startClockTimer();
 		hideBottomUIMenu2();
-
+		topInAudio=MediaPlayer.create(this,Resource.tableConnectTopAudioId);
+		botInAudio=MediaPlayer.create(this,Resource.tableConnectBotAudioId);
 
 		clockClassTextView.setText("Math Class at "+ExtraTools.getClassTime());
 
@@ -127,9 +130,12 @@ public class MainActivity extends Activity  {
 	}
 
 
-	private void linkUserInterface ()// Link user interface between xml with java code
+	private void linkUserInterfaceAndCreateCustomVideoview()
 	{
 
+		/*
+			Link user interface between xml with java code and create custom videoview
+		 */
 		deviceConnSate = findViewById(R.id.text_device_conn_state);
 		tabletConnSate = findViewById(R.id.text_tablet_conn_state);
 		mobileConnSate = findViewById(R.id.text_mobile_conn_state);
@@ -137,7 +143,7 @@ public class MainActivity extends Activity  {
 		//paintingView =findViewById(R.id.PaintingView);
 		clockTextView=findViewById(R.id.clock_TextView);
 		clockClassTextView=findViewById(R.id.class_clock_textview);
-		customVideoView=new CustomVideoView(findViewById(R.id.videoview), findViewById(R.id.imageView), new CustomVideoView.AlexaFinishCallback() {
+		customVideoView=new CustomVideoView(this,findViewById(R.id.videoview), findViewById(R.id.imageView), new CustomVideoView.AlexaFinishCallback() {
 			@Override
 			public void onCompletion() {
 				changeSession(ExtraTools.S1);
@@ -196,36 +202,34 @@ public class MainActivity extends Activity  {
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-		String action = intent.getAction();
-		String state = "";
-		switch (action) {
-			case Constant.CMD_SHUTDOWN:
-				finishAndRemoveTask();
-				break;
-			case Constant.RECEIVE:
-				String data = new String(intent.getByteArrayExtra(Constant.RECEIVE_MSG));
-				bleMessageProcess(data);
-				Log.i(TAG,data);
-
-				receivingData.setText(data);
-				triggerOnClick(data); //同 onclick(), 觸發changeSession事件
-				break;
-			case Constant.STATE_ARDUINO:
-				state = new String(intent.getByteArrayExtra(Constant.CONN));
-				deviceConnSate.setText(state);
-				break;
-			case Constant.STATE_TABLET:
-				state = new String(intent.getByteArrayExtra(Constant.CONN));
-				tabletConnSate.setText(state);
-				break;
-			case Constant.STATE_MOBILE:
-				state = new String(intent.getByteArrayExtra(Constant.CONN));
-				mobileConnSate.setText(state);
-				break;
-		}
+			String action = intent.getAction();
+			String state = "";
+			switch (action) {
+				case Constant.CMD_SHUTDOWN:
+					finishAndRemoveTask();
+					break;
+				case Constant.RECEIVE:
+					String data = new String(intent.getByteArrayExtra(Constant.RECEIVE_MSG));
+					processBleMessage(data);
+					receivingData.setText(data);
+					triggerOnClick(data); //同 onclick(), 觸發changeSession事件
+					break;
+				case Constant.STATE_ARDUINO:
+					state = new String(intent.getByteArrayExtra(Constant.CONN));
+					deviceConnSate.setText(state);
+					break;
+				case Constant.STATE_TABLET:
+					state = new String(intent.getByteArrayExtra(Constant.CONN));
+					tabletConnSate.setText(state);
+					break;
+				case Constant.STATE_MOBILE:
+					state = new String(intent.getByteArrayExtra(Constant.CONN));
+					mobileConnSate.setText(state);
+					break;
+			}
 		}
 	};
-	private void bleMessageProcess (String message)
+	private void processBleMessage(String message)
 	{
 		String []dataSplit =message.split(",");
 		if (dataSplit[0].equals("next"))
@@ -261,6 +265,7 @@ public class MainActivity extends Activity  {
 				TimerTask task = new TimerTask(){
 					public void run(){
 						sendMessageToTabletServer(("btm,in," + (currentSession + 1) + "," + (customVideoView.getCurrentCheckPointIndex())).getBytes());
+						botInAudio.start();
 					}
 				};
 				Timer timer = new Timer();
@@ -268,12 +273,11 @@ public class MainActivity extends Activity  {
 			}
 			else if (dataSplit[1].equals("out"))
 			{
-				Log.e(TAG,"OUOUOUOUOUOUOUOUOU");
+
 				if(currentSession==ExtraTools.S4) customVideoView.setIsSingle(true);
 //				sendMessageToTabletServer(("btm,out," + (currentSession + 1) + "," + (customVideoView.getCurrentCheckPointIndex())).getBytes());
 
 			}
-			Log.e(TAG, "dataSplit[1].equals(\"in\")) sendMessageToTabletServer");
 		}
 	}
 
@@ -282,7 +286,6 @@ public class MainActivity extends Activity  {
 		Intent intent = new Intent();
 		intent.setAction(Constant.SEND);
 		intent.putExtra(Constant.SEND_MSG, message);
-
 		sendBroadcast(intent);
 	}
 
@@ -312,12 +315,16 @@ public class MainActivity extends Activity  {
 
 	public void onClick (View view)
 	{
+		/*
+		 *  Button click event
+		 *
+		 * */
 		switch (view.getId())
 		{
 			case R.id.btn_video1: case  R.id.btn_s5back:	case R.id.btn_endclass:
 
-				changeSession(ExtraTools.S1);
-				break;
+			changeSession(ExtraTools.S1);
+			break;
 			case R.id.btn_video2:
 				changeSession(ExtraTools.S2);
 				break;
@@ -326,41 +333,38 @@ public class MainActivity extends Activity  {
 				break;
 			case R.id.btn_video4:
 				changeSession(ExtraTools.S4);
-				//lottieAnimationView.setAnimation("kaleidoscope2.mp4.lottie.json");
-				//lottieAnimationView.loop(true);
-
 				break;
 			case R.id.btn_video5:
+				//customVideoView.playAlexaOkAudio("ff");
 //				changeSession(ExtraTools.S5);
 				break;
-				//customVideoView.replayVideo();
+			//customVideoView.replayVideo();
 
 			case R.id.btn_test:
 				String testStr = "Hello world";
 				sendMessageToTabletServer(testStr.getBytes());
 				break;
 			case R.id.btn_s4next: case R.id.btn_start: case R.id.btn_play:
-				if (isNextLock ==false) {
-					sendMessageToTabletServer("next,".getBytes());
-					customVideoView.nextClick();
-					sendLockAppToService(true);
-					isNextLock =true;
-					Timer timer =new Timer();
-					timer.schedule(new TimerTask() {
-						@Override
-						public void run() {
-							Log.e(TAG,"Timer Click");
-							isNextLock =false;
-							timer.cancel();
-						}
-					},500);
-				}
-				else
-				{
-					Log.e(TAG,"Can not next");
-
-				}
-				break;
+			if (!isNextLock) {
+				sendMessageToTabletServer("next,".getBytes());
+				customVideoView.nextClick();
+				sendLockAppToService(true);
+				isNextLock =true;
+				Timer timer =new Timer();
+				timer.schedule(new TimerTask() {
+					@Override
+					public void run() {
+						Log.e(TAG,"Timer Click");
+						isNextLock =false;
+						timer.cancel();
+					}
+				},500);
+			}
+			else
+			{
+				Log.e(TAG,"Can not next");
+			}
+			break;
 			case R.id.btn_audible:
 				isPlay =true;
 				classInfoLayout.setVisibility(View.INVISIBLE);
@@ -369,6 +373,8 @@ public class MainActivity extends Activity  {
 				sendMessageToTabletServer("audible,".getBytes());
 				customVideoView.nextClick();
 				sendLockAppToService(true);
+				audiable_play_button.setBackground(isPlay? getResources().getDrawable(R.mipmap.pause): getResources().getDrawable(R.mipmap.play));
+
 				break;
 			case R.id.btn_audible_play:
 				isPlay=!isPlay;
@@ -376,7 +382,6 @@ public class MainActivity extends Activity  {
 				if (isPlay)
 				{
 					customVideoView.s5PlayVideo();
-
 				}
 				else
 				{
@@ -410,19 +415,24 @@ public class MainActivity extends Activity  {
 				bleDebugLayout.setVisibility(visablity);
 				btnDebugLayout.setVisibility(visablity);
 				break;
-				default:
+			default:
 				break;
-
-
-
 		}
 
 	}
 
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		topInAudio.start();
+	}
+
 	private void changeSession (int session)
 	{
+		currentSession = session;
 		if (session ==ExtraTools.S1) {
 			classInfoLayout.setVisibility(View.VISIBLE);
+			clockClassTextView.setText("Math Class at "+ExtraTools.getClassTime());
 			sendLockAppToService(false);
 		}
 		else if (session==ExtraTools.S2 || session== ExtraTools.S4)
@@ -437,14 +447,12 @@ public class MainActivity extends Activity  {
 
 
 		sendMessageToTabletServer(("session,"+(session+1)).getBytes());
-		currentSession = session;
+//		currentSession = session;
 		customVideoView.changeSession(session);
 		audiable_play_button.setVisibility(View.INVISIBLE);
 		Log.i(TAG,"Change Session To "+currentSession);
-//		Intent intent = new Intent();
-//		intent.setAction(Constant.LOCK_APPLICATION);
-//		intent.putExtra(Constant.LOCK_APPLICATION, currentSession);
-//		sendBroadcast(intent);
+
+
 		for (int sessionLayoutIndex =0;sessionLayoutIndex<sessionLayouts.length ;sessionLayoutIndex++)
 		{
 			if (sessionLayouts[sessionLayoutIndex] != null)
@@ -508,6 +516,7 @@ public class MainActivity extends Activity  {
 		Intent intent = new Intent();
 		intent.setAction(Constant.LOCK_APPLICATION);
 		intent.putExtra(Constant.LOCK_APPLICATION, isLockApp);
+		intent.putExtra("currentSession", currentSession);
 		sendBroadcast(intent);
 	}
 }

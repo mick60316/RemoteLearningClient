@@ -16,7 +16,7 @@ public class LightSensor implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor mPressure;
     private ImageView mask;
-    private float theshold =300.0f;
+    private float theshold =10.0f;
     public LightSensor (SensorManager sensorManager,ImageView mask)
     {
         this.sensorManager =sensorManager;
